@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1 Update Book
+  form(action=`/books/${book.id}` method='post')
+    label(for='title') Title:
+    input(type='text' name='title' id='title' value=book.title)
+    label(for='author') Author:
+    input(type='text' name='author' id='author' value=book.author)
+    label(for='genre') Genre:
+    input(type='text' name='genre' id='genre' value=book.genre)
+    label(for='year') Year:
+    input(type='number' name='year' id='year' value=book.year)
+    button(type='submit') Update Book
+
+  form(action=`/books/${book.id}/delete` method='post')
+    button(type='submit') Delete
