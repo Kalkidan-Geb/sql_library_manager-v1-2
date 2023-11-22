@@ -2,12 +2,13 @@ extends layout
 
 block content
   h1 New Book
-
-    if errors && errors.length > 0
+  
+  if errors && errors.length > 0
         h2 
         ul.error-list
          each error in errors
           li= error
+
 
   form(action='/books/new' method='post')
     p
