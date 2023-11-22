@@ -31,7 +31,7 @@ router.get('/new', (req, res, next) => {
 
 // POST /books/new - (posts a new book to the database)
 router.post('/new', asyncHandler(async (req, res, next) => {
-  const { title, author } = req.body;
+ /* const { title, author } = req.body;
 
   if (!title && !author) {
     const errors = ['Title and Author are required'];
@@ -49,10 +49,10 @@ router.post('/new', asyncHandler(async (req, res, next) => {
     const errors = ['Author is required'];
     res.render('new-book', { title: 'New Book', errors });
     return; // Prevent further execution of the route if author is empty
-  }
-
+  } ()
+*/
   try {
-    const book = await Book.create({ title, author });
+    const book = await Book.create(req.body);
     res.redirect('/books');
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
