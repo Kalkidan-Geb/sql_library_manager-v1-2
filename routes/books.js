@@ -13,24 +13,25 @@ router.get('/', async (req, res, next) => {
 });
 
 // GET /books/new - (displays the create new book form)
-router.get('/new', (req, res, next) => {
-  res.render('new-book', { title: 'New Book', errors: [] });
+router.get('/new', (req, res) => {
+  res.render('new-book', { title: 'New Book', book: {} });
 });
 
 // POST /books/new - (posts a new book to the database)
 router.post('/new', async (req, res, next) => {
-  try {
-    // validate that title and author are not empty using Sequelize model validation
-    if (!req.body.title || !req.body.author) {
-      throw new Error('Title and Author are required');
-    }
+  const { title, author, genre, year } = req.body;
 
-    await Book.create(req.body);
+  try {
+    // Use Sequelize model validation
+    const book = await Book.build({ title, author, genre, year });
+    await book.validate();
+    await book.save();
+
     res.redirect('/books');
   } catch (error) {
-    if (error.name === 'SequelizeValidationError' || error.message === 'Title and Author are required') {
-      const errors = ['Title and Author are required'];
-      res.render('new-book', { title: 'New Book', errors });
+    if (error.name === 'SequelizeValidationError') {
+      const errors = error.errors.map((err) => err.message);
+      res.render('new-book', { title: 'New Book', book: { title, author, genre, year, errors } });
     } else {
       next(error);
     }
@@ -44,8 +45,7 @@ router.get('/:id', async (req, res, next) => {
     if (book) {
       res.render('update-book', { title: 'Update Book', book });
     } else {
-      next(); 
-      // used to pass to 404 handler
+      next();
     }
   } catch (error) {
     next(error);
@@ -60,12 +60,11 @@ router.post('/:id', async (req, res, next) => {
       await book.update(req.body);
       res.redirect('/books');
     } else {
-      next(); 
-      // also used to pass to 404 handler
+      next();
     }
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
-      const errors = error.errors.map(err => err.message);
+      const errors = error.errors.map((err) => err.message);
       const book = await Book.findByPk(req.params.id);
       res.render('update-book', { title: 'Update Book', book, errors });
     } else {
@@ -82,8 +81,7 @@ router.post('/:id/delete', async (req, res, next) => {
       await book.destroy();
       res.redirect('/books');
     } else {
-      next(); 
-      // used to pass to 404 handler again
+      next();
     }
   } catch (error) {
     next(error);

@@ -2,7 +2,9 @@ extends layout
 
 block content
   h1= title
-  a(href='/books/new') Create New Book
+  p
+    a(class="button" href="/books/new") Create New Book
+
 
   if books && books.length > 0
     table

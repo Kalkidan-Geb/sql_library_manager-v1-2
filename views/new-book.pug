@@ -2,19 +2,27 @@ extends layout
 
 block content
   h1 New Book
-  form(action='/books/new' method='post')
-    label(for='title') Title:
-    input(type='text' name='title' id='title' required)
-    label(for='author') Author:
-    input(type='text' name='author' id='author' required)
-    label(for='genre') Genre:
-    input(type='text' name='genre' id='genre')
-    label(for='year') Year:
-    input(type='number' name='year' id='year')
-    button(type='submit') Add Book
-    button(type='delete') Cancel
 
     if errors && errors.length > 0
-      ul.error-list
-        each error in errors
+        h2 
+        ul.error-list
+         each error in errors
           li= error
+
+  form(action='/books/new' method='post')
+    p
+        label(for='title') Title:
+        input(type='text' name='title' id='title' )
+    p    
+        label(for='author') Author:
+        input(type='text' name='author' id='author')
+    p
+        label(for='genre') Genre:
+        input(type='text' name='genre' id='genre')
+    p    
+        label(for='year') Year:
+        input(type='number' name='year' id='year')
+    p
+        input(type="submit" value="Create New Book")
+    p    
+        a(href="/books" class="button" ) Cancel

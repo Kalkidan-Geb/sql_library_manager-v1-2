@@ -4,7 +4,7 @@ const booksRouter = require('./books');
 
 // Home page route
 router.get('/', (req, res) => {
-  res.render('index', { title: 'Library' });
+  res.redirect('/books');
 });
 
 // Books routes
