@@ -30,34 +30,17 @@ router.get('/new', (req, res, next) => {
 });
 
 // POST /books/new - (posts a new book to the database)
-router.post('/new', asyncHandler(async (req, res, next) => {
- /* const { title, author } = req.body;
-
-  if (!title && !author) {
-    const errors = ['Title and Author are required'];
-    res.render('new-book', { title: 'New Book', errors });
-    return; // Prevent further execution of the route if both fields are empty
-  }
-
-  if (!title) {
-    const errors = ['Title is required'];
-    res.render('new-book', { title: 'New Book', errors });
-    return; // Prevent further execution of the route if title is empty
-  }
-
-  if (!author) {
-    const errors = ['Author is required'];
-    res.render('new-book', { title: 'New Book', errors });
-    return; // Prevent further execution of the route if author is empty
-  } ()
-*/
+router.post(
+  "/new", 
+  asyncHandler(async (req, res, next) => {
+    let book;
   try {
-    const book = await Book.create(req.body);
+    book = await Book.create(req.body);
     res.redirect('/books');
   } catch (error) {
     if (error.name === 'SequelizeValidationError') {
       const errors = error.errors.map((err) => err.message);
-      res.render('new-book', { title: 'New Book', errors });
+      res.render('new-book', { title: 'New Book', book, errors });
     } else {
       next(error);
     }
@@ -81,8 +64,9 @@ router.get('/:id', asyncHandler(async (req, res, next) => {
 
 // POST /books/:id - (updates book information in the database)
 router.post('/:id', asyncHandler(async (req, res, next) => {
+  let book;
   try {
-    const book = await Book.findByPk(req.params.id);
+    book = await Book.findByPk(req.params.id);
     if (book) {
       await book.update(req.body);
       res.redirect('/books');
@@ -94,6 +78,8 @@ router.post('/:id', asyncHandler(async (req, res, next) => {
     if (error.name === 'SequelizeValidationError') {
       const errors = error.errors.map((err) => err.message);
       // Do not include errors as a property on book
+      book = await Book.build(req.body);
+      book.id = req.params.id;
       res.render('update-book', { title: 'Update Book', book, errors });
     } else {
       next(error);

@@ -2,6 +2,13 @@ extends layout
 
 block content
   h1 Update Book
+
+  if errors && errors.length > 0
+        h2.error Oops!
+        ul.error
+            each error in errors
+                li= error
+
   form(action=`/books/${book.id}` method='post')
 
     p
@@ -15,7 +22,7 @@ block content
         input(type='text' name='genre' id='genre' value=book.genre)
     p  
         label(for='year') Year:
-        input(type='number' name='year' id='year' value=book.year)
+        input(type='text' name='year' id='year' value=book.year)
     p  
         input(type="submit" value="Update Book")
     p
